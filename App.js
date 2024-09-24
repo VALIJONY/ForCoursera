@@ -1,23 +1,17 @@
 import React from 'react';
-import BookingForm from './components/BookingForm';
-import AccessibilityTags from './components/AccessibilityTags';
-import './App.css';
+import BookingForm from './BookingForm';
 
 function App() {
   return (
-    <div className="App">
-      <AccessibilityTags />
-      <header className="App-header">
-        <h1>Little Lemon Restaurant Booking</h1>
+    <div>
+      <header>
+        <h1>Little Lemon Restaurant</h1>
       </header>
       <main>
-        <section id="booking" aria-label="Table Booking Section">
-          <h2>Book a Table</h2>
-          <BookingForm />
-        </section>
+        <BookingForm />
       </main>
       <footer>
-        <p>&copy; 2024 Little Lemon Restaurant</p>
+        <p>&copy; 2024 Little Lemon. All rights reserved.</p>
       </footer>
     </div>
   );

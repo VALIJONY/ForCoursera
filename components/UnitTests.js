@@ -1,15 +1,17 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import BookingForm from './BookingForm';
 
-test('renders booking form', () => {
+test('renders BookingForm component', () => {
   render(<BookingForm />);
-  const nameInput = screen.getByLabelText(/name/i);
+  const nameInput = screen.getByLabelText(/Name/i);
   expect(nameInput).toBeInTheDocument();
 });
 
-test('submits form with validation errors', () => {
+test('shows validation errors when form is incomplete', () => {
   render(<BookingForm />);
-  const submitButton = screen.getByText(/book table/i);
+  const submitButton = screen.getByText(/Submit/i);
   fireEvent.click(submitButton);
-  expect(screen.getByText(/name is required/i)).toBeInTheDocument();
+
+  const errorMessage = screen.getByText(/Name is required/i);
+  expect(errorMessage).toBeInTheDocument();
 });
