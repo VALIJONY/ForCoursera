@@ -1,88 +1,97 @@
-import React, { useState } from 'react';
-import './BookingForm.css'; // CSS for styling
+import React, { useState } from "react";
+import DatePicker from "./DatePicker";
+import TimePicker from "./TimePicker";
 
-const BookingForm = () => {
+function BookingForm({ onBooking, availableTimes }) {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    guests: '',
-    date: '',
-    time: ''
+    date: "",
+    time: "",
+    guests: "",
+    occasion: ""
   });
 
   const [errors, setErrors] = useState({});
-  
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name) newErrors.name = "Name is required";
-    if (!formData.email || !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Valid email is required";
-    if (!formData.guests) newErrors.guests = "Number of guests is required";
-    if (!formData.date) newErrors.date = "Date is required";
-    if (!formData.time) newErrors.time = "Time is required";
-    return newErrors;
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const validateForm = () => {
+    let formErrors = {};
+    if (!formData.date) formErrors.date = "Date is required";
+    if (!formData.time) formErrors.time = "Time is required";
+    if (!formData.guests || formData.guests <= 0) formErrors.guests = "Number of guests must be greater than 0";
+    return formErrors;
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const formErrors = validate();
-    if (Object.keys(formErrors).length === 0) {
-      // Submit form data (e.g., send to server)
-      console.log('Form submitted successfully', formData);
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length === 0) {
+      onBooking(formData);
     } else {
-      setErrors(formErrors);
+      setErrors(validationErrors);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label htmlFor="name">Name:</label>
-      <input
-        type="text"
-        id="name"
-        value={formData.name}
-        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-      />
-      {errors.name && <p className="error">{errors.name}</p>}
+    <form onSubmit={handleSubmit} aria-labelledby="booking-form">
+      <fieldset>
+        <legend id="booking-form">Make a reservation</legend>
 
-      <label htmlFor="email">Email:</label>
-      <input
-        type="email"
-        id="email"
-        value={formData.email}
-        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-      />
-      {errors.email && <p className="error">{errors.email}</p>}
+        {/* Date Field */}
+        <label htmlFor="date">Choose a date</label>
+        <DatePicker
+          id="date"
+          name="date"
+          value={formData.date}
+          onChange={handleChange}
+          aria-required="true"
+        />
+        {errors.date && <span className="error">{errors.date}</span>}
 
-      <label htmlFor="guests">Guests:</label>
-      <input
-        type="number"
-        id="guests"
-        value={formData.guests}
-        onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
-      />
-      {errors.guests && <p className="error">{errors.guests}</p>}
+        {/* Time Field */}
+        <label htmlFor="time">Choose a time</label>
+        <TimePicker
+          id="time"
+          name="time"
+          availableTimes={availableTimes}
+          value={formData.time}
+          onChange={handleChange}
+          aria-required="true"
+        />
+        {errors.time && <span className="error">{errors.time}</span>}
 
-      <label htmlFor="date">Date:</label>
-      <input
-        type="date"
-        id="date"
-        value={formData.date}
-        onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-      />
-      {errors.date && <p className="error">{errors.date}</p>}
+        {/* Guests Field */}
+        <label htmlFor="guests">Number of guests</label>
+        <input
+          type="number"
+          id="guests"
+          name="guests"
+          min="1"
+          max="10"
+          value={formData.guests}
+          onChange={handleChange}
+          required
+        />
+        {errors.guests && <span className="error">{errors.guests}</span>}
 
-      <label htmlFor="time">Time:</label>
-      <input
-        type="time"
-        id="time"
-        value={formData.time}
-        onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-      />
-      {errors.time && <p className="error">{errors.time}</p>}
+        {/* Occasion Field */}
+        <label htmlFor="occasion">Occasion</label>
+        <input
+          type="text"
+          id="occasion"
+          name="occasion"
+          value={formData.occasion}
+          onChange={handleChange}
+        />
 
-      <button type="submit">Submit</button>
+        {/* Submit Button */}
+        <button type="submit" className="submit-btn">Book Now</button>
+      </fieldset>
     </form>
   );
-};
+}
 
 export default BookingForm;
